@@ -1,0 +1,26 @@
+services:
+  antigravity:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: antigravity-remote
+    restart: unless-stopped
+    stdin_open: true # Keeps STDIN open for interactive sessions (docker run -i)
+    tty: true # Allocates pseudo-TTY (docker run -t)
+    working_dir: /workspace
+    volumes:
+      # Mount host workspace for project files
+      - ${WORKSPACE}:/workspace
+      # Persist Antigravity authentication credentials, tokens, and agent sessions
+      - ${GEMINI}:/root/.gemini
+      - ${CONFIG}:/root/.config
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+      - TZ=America/Chicago
+    # Antigravity Remote Control uses an outbound tunnel to antigravity.google.com,
+    # so no inbound host ports are required for remote control itself.
+    # Expose any local application ports your projects may need below:
+    # ports:
+    #   - "3000:3000"
+    #   - "8080:8080"
+networks: {}
