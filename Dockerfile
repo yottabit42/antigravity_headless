@@ -4,8 +4,7 @@ FROM debian:testing
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
-    TERM=xterm-256color \
-    SSH_CONNECTION="127.0.0.1 0 127.0.0.1 22"
+    TERM=xterm-256color
 
 # Install minimal base tools, cron, and tmux
 RUN apt-get update && apt-get install -y --no-install-recommends \
