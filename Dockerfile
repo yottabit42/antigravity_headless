@@ -56,6 +56,7 @@ RUN chmod 0644 /etc/cron.d/apt-auto-upgrade \
 # Configure workspace directory
 WORKDIR /workspace
 RUN chown -R antigravity:antigravity /workspace
+RUN ln -s /workspace /root/Documents
 
 # Configure tmux globally: dynamic auto-resizing, mouse support, and 256color
 RUN cat <<'EOF' > /etc/tmux.conf
@@ -85,6 +86,9 @@ rm -f /var/run/crond.pid /run/crond.pid /var/run/cron.pid /run/cron.pid
 # Ensure cron log exists
 touch /var/log/apt-cron.log
 chmod 0666 /var/log/apt-cron.log
+
+# Ensure /root/Documents points to /workspace so Antigravity defaults new workspaces to /workspace
+[ -e /root/Documents ] || ln -s /workspace /root/Documents
 
 # 1. Start the cron daemon
 if [ "$(id -u)" -eq 0 ]; then
