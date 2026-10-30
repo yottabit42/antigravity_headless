@@ -16,13 +16,13 @@ else
     exit 1
 fi
 
-# Check 2: Dockerfile's entrypoint.sh section must contain the runtime check
+# Check 2: Dockerfile's entrypoint.sh section must contain the runtime check (safe against dangling symlinks)
 echo -n "Checking entrypoint.sh in Dockerfile for runtime symlink guarantee... "
-if grep -E '\[ -e /root/Documents \] \|\| ln -s /workspace /root/Documents' "$DOCKERFILE" >/dev/null; then
+if grep -F '[ -e /root/Documents ] || [ -L /root/Documents ] || ln -s /workspace /root/Documents' "$DOCKERFILE" >/dev/null; then
     echo "OK"
 else
     echo "FAILED"
-    echo "Error: entrypoint script in Dockerfile missing '[ -e /root/Documents ] || ln -s /workspace /root/Documents'" >&2
+    echo "Error: entrypoint script in Dockerfile missing hardened '[ -e /root/Documents ] || [ -L /root/Documents ] || ln -s /workspace /root/Documents'" >&2
     exit 1
 fi
 
@@ -61,7 +61,23 @@ echo -n "Testing runtime symlink idempotency... "
 (
     TARGET="$MOCK_WORKSPACE"
     LINK="$MOCK_ROOT/Documents"
-    [ -e "$LINK" ] || ln -s "$TARGET" "$LINK"
+    [ -e "$LINK" ] || [ -L "$LINK" ] || ln -s "$TARGET" "$LINK"
+)
+echo "OK"
+
+# Check 5: Dangling symlink safety (when target is missing, [ -e ] is false but [ -L ] is true)
+echo -n "Testing runtime safety with dangling symlinks... "
+DANGLING_ROOT="$TEST_DIR/dangling_root"
+mkdir -p "$DANGLING_ROOT"
+# Create a dangling symlink pointing to a non-existent directory
+ln -s "$TEST_DIR/nonexistent_workspace" "$DANGLING_ROOT/Documents"
+
+# Running the hardened snippet under set -e must not attempt ln -s and fail
+(
+    set -e
+    TARGET="$TEST_DIR/nonexistent_workspace"
+    LINK="$DANGLING_ROOT/Documents"
+    [ -e "$LINK" ] || [ -L "$LINK" ] || ln -s "$TARGET" "$LINK"
 )
 echo "OK"
 

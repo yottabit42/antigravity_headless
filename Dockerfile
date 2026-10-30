@@ -88,7 +88,7 @@ touch /var/log/apt-cron.log
 chmod 0666 /var/log/apt-cron.log
 
 # Ensure /root/Documents points to /workspace so Antigravity defaults new workspaces to /workspace
-[ -e /root/Documents ] || ln -s /workspace /root/Documents
+[ -e /root/Documents ] || [ -L /root/Documents ] || ln -s /workspace /root/Documents
 
 # 1. Start the cron daemon
 if [ "$(id -u)" -eq 0 ]; then
