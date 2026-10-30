@@ -23,6 +23,9 @@ A lightweight Debian Testing (`debian:testing`) Docker container for running the
 - **Dockge & NAS Optimized**:
   - Fully self-contained `Dockerfile` (requires no separate auxiliary host scripts).
   - Designed for bind-mounting persistent host paths (e.g. `/mnt/vol1/docker/...`).
+- **Default Workspace Scoping**:
+  - Automatically links `/root/Documents` to `/workspace`.
+  - Ensures new workspace creation dialogs and directory pickers in the Antigravity UI default to `/workspace` instead of `/root`.
 ---
 ## Directory & File Structure
 ```text
@@ -30,7 +33,7 @@ antigravity-docker/
 ├── compose.yaml          # Docker Compose service definition
 ├── Dockerfile            # Self-contained build definition
 ├── README.md             # Documentation
-└── workspace/            # Default project files mount (or your host workspace path)
+└── workspace/            # Default project files mount (linked to /root/Documents)
 ```
 ---
 ## Configuration (`compose.yaml`)
