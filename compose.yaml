@@ -9,8 +9,9 @@ services:
     tty: true # Allocates pseudo-TTY (docker run -t)
     working_dir: /workspace
     volumes:
-      # Mount host workspace for project files
+      # Mount host workspace for project files (and inside /root/workspace for UI folder picker)
       - ${WORKSPACE}:/workspace
+      - ${WORKSPACE}:/root/workspace
       # Persist Antigravity authentication credentials, tokens, and agent sessions
       - ${GEMINI}:/root/.gemini
       - ${CONFIG}:/root/.config

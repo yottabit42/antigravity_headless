@@ -24,8 +24,8 @@ A lightweight Debian Testing (`debian:testing`) Docker container for running the
   - Fully self-contained `Dockerfile` (requires no separate auxiliary host scripts).
   - Designed for bind-mounting persistent host paths (e.g. `/mnt/vol1/docker/...`).
 - **Default Workspace Scoping**:
-  - Automatically links `/root/Documents` to `/workspace`.
-  - Ensures new workspace creation dialogs and directory pickers in the Antigravity UI default to `/workspace` instead of `/root`.
+  - Mounts your host workspace to both `/workspace` and `/root/workspace`.
+  - Because `agy`'s `ReadDir` filters out symlinks (`FILE_TYPE_SYMLINK`), bind-mounting directly to `/root/workspace` ensures `workspace` appears as a native directory (`FILE_TYPE_DIRECTORY`) inside `/root` in the Antigravity UI workspace picker.
 ---
 ## Directory & File Structure
 ```text
@@ -33,7 +33,7 @@ antigravity-docker/
 ├── compose.yaml          # Docker Compose service definition
 ├── Dockerfile            # Self-contained build definition
 ├── README.md             # Documentation
-└── workspace/            # Default project files mount (linked to /root/Documents)
+└── workspace/            # Default project files mount (/workspace and /root/workspace)
 ```
 ---
 ## Configuration (`compose.yaml`)
@@ -48,8 +48,9 @@ services:
     restart: unless-stopped
     working_dir: /workspace
     volumes:
-      # Mount host workspace for project files
+      # Mount host workspace for project files (and inside /root/workspace for UI folder picker)
       - ${WORKSPACE}:/workspace
+      - ${WORKSPACE}:/root/workspace
       # Persist Antigravity authentication credentials, tokens, and agent sessions
       - ${GEMINI}:/root/.gemini
       # Persist Antigravity configuration
