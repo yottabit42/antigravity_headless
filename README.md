@@ -24,8 +24,8 @@ A lightweight Debian Testing (`debian:testing`) Docker container for running the
   - Fully self-contained `Dockerfile` (requires no separate auxiliary host scripts).
   - Designed for bind-mounting persistent host paths (e.g. `/mnt/vol1/docker/...`).
 - **Default Workspace Scoping**:
-  - Mounts your host workspace to both `/workspace` and `/root/workspace`.
-  - Because `agy`'s `ReadDir` filters out symlinks (`FILE_TYPE_SYMLINK`), bind-mounting directly to `/root/workspace` ensures `workspace` appears as a native directory (`FILE_TYPE_DIRECTORY`) inside `/root` in the Antigravity UI workspace picker.
+  - Mounts your host workspace directly to `/root/workspaces`.
+  - Because `agy`'s `ReadDir` filters out symlinks (`FILE_TYPE_SYMLINK`), bind-mounting directly to `/root/workspaces` ensures `workspaces` appears as a native directory (`FILE_TYPE_DIRECTORY`) inside `/root` in the Antigravity UI workspace picker.
 ---
 ## Directory & File Structure
 ```text
@@ -33,7 +33,7 @@ antigravity-docker/
 ├── compose.yaml          # Docker Compose service definition
 ├── Dockerfile            # Self-contained build definition
 ├── README.md             # Documentation
-└── workspace/            # Default project files mount (/workspace and /root/workspace)
+└── workspaces/           # Default project files mount (/root/workspaces)
 ```
 ---
 ## Configuration (`compose.yaml`)
@@ -46,15 +46,11 @@ services:
       dockerfile: Dockerfile
     container_name: antigravity-remote
     restart: unless-stopped
-    working_dir: /workspace
     volumes:
-      # Mount host workspace for project files (and inside /root/workspace for UI folder picker)
-      - ${WORKSPACE}:/workspace
-      - ${WORKSPACE}:/root/workspace
+      # Mount host workspaces for project files (and inside /root/workspaces for UI folder picker)
+      - ${WORKSPACE}:/root/workspaces
       # Persist Antigravity authentication credentials, tokens, and agent sessions
-      - ${GEMINI}:/root/.gemini
-      # Persist Antigravity configuration
-      - ${CONFIG}:/root/.config
+      - ${GEMINI}:/root
     environment:
       - DEBIAN_FRONTEND=noninteractive
       - TZ=${TZ}

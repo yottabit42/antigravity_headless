@@ -54,9 +54,9 @@ RUN chmod 0644 /etc/cron.d/apt-auto-upgrade \
     && chmod 0666 /var/log/apt-cron.log
 
 # Configure workspace directory
-WORKDIR /workspace
-RUN mkdir -p /workspace /root/workspace \
-    && chown -R antigravity:antigravity /workspace /root/workspace
+WORKDIR /root/workspaces
+RUN mkdir -p /root/workspaces \
+    && chown -R antigravity:antigravity /root/workspaces
 
 # Configure tmux globally: dynamic auto-resizing, mouse support, and 256color
 RUN cat <<'EOF' > /etc/tmux.conf
