@@ -53,11 +53,6 @@ RUN chmod 0644 /etc/cron.d/apt-auto-upgrade \
     && touch /var/log/apt-cron.log \
     && chmod 0666 /var/log/apt-cron.log
 
-# Configure workspace directory
-WORKDIR /root/workspaces
-RUN mkdir -p /root/workspaces \
-    && chown -R antigravity:antigravity /root/workspaces
-
 # Configure tmux globally: dynamic auto-resizing, mouse support, and 256color
 RUN cat <<'EOF' > /etc/tmux.conf
 set -g default-terminal "xterm-256color"
