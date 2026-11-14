@@ -32,6 +32,7 @@ A lightweight Debian Testing (`debian:testing`) Docker container for running the
 antigravity-docker/
 ├── compose.yaml          # Docker Compose service definition
 ├── Dockerfile            # Self-contained build definition
+├── images/               # Documentation screenshots
 ├── README.md             # Documentation
 └── workspaces/           # Default project files mount (/root/workspaces)
 ```
@@ -119,6 +120,18 @@ To use the Remote Control web dashboard at **[https://antigravity.google.com](ht
 5. Detach safely with <kbd>Ctrl+b</kbd> then <kbd>d</kbd>.
 
 Then visit **[https://antigravity.google.com](https://antigravity.google.com)** to manage and interact with your agents from any browser or mobile device.
+
+### Selecting Your Remote Control Instance
+> [!IMPORTANT]
+> Newer versions of the Antigravity web UI default to **Remote Conversations** in the bottom-left selector, which is misleading and will not show your running container's Remote Control session.
+
+1. In the bottom-left sidebar below **Settings**, click the **Remote Conversations** dropdown:
+
+   ![Default Remote Conversations selector in the Antigravity web UI](images/remote-conversations-default.png)
+
+2. Change the selection from **Remote Conversations** to **Remote Control Instances** and choose your active instance:
+
+   ![Selecting Remote Control Instances from the dropdown](images/remote-control-instances.png)
 ---
 
 ## Installing Utilities via `apt`
